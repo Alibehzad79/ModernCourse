@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.router-link-active,
+.router-link-exact-active {
+    @apply border border-[#704FE6] lg:rounded-full text-[#704FE6] px-2 w-full lg:w-auto py-2 lg:py-0
+}
