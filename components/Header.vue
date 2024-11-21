@@ -1,6 +1,50 @@
 <script setup>
 
+import { useField, useForm } from "vee-validate"
+
+const { handleSubmit, handleReset } = useForm({
+    validationSchema: {
+        username(value) {
+            if (value?.length >= 3) return true
+            return "Username neede to b at least 3 characters."
+        },
+        email(value) {
+            if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
+            return 'Must be a valid e-mail'
+        },
+        password1(value) {
+            if (value?.length >= 6) return true
+            return "Password neede to b at least 6 characters."
+        },
+        password2(value) {
+            if (value?.length >= 6) return true
+            return "Password neede to b at least 6 characters."
+        },
+    }
+})
+
+const username = useField('username')
+const email = useField('email')
+const password1 = useField('password1')
+const password2 = useField('password2')
+const passwordsMatch = ref(false)
+
+const login = handleSubmit(values => {
+    alert(JSON.stringify(values, null, 2))
+})
+
+const register = handleSubmit(values => {
+    if (password1.value.value === password2.value.value) {
+        passwordsMatch.value = false
+        alert(JSON.stringify(values, null, 2))
+    } else {
+        passwordsMatch.value = true
+    }
+})
+
+
 const sheet = ref(false)
+const tab = ref(null)
 
 </script>
 
@@ -57,21 +101,122 @@ const sheet = ref(false)
                     <NuxtLink to="/contact">Contact</NuxtLink>
                 </div>
                 <div>
-                    <NuxtLink to="/auth">
-                        <MyButton lable="Create Account" color="deep-purple"
-                            icon="solar:square-alt-arrow-right-linear" />
-                    </NuxtLink>
+                    <v-dialog max-width="500">
+                        <template v-slot:activator="{ props: activatorProps }">
+                            <MyButton lable="Create Account" color="deep-purple"
+                                icon="solar:square-alt-arrow-right-linear" v-bind="activatorProps" variant="flat" />
+                        </template>
+
+                        <template v-slot:default="{ isActive }">
+                            <v-card>
+                                <v-tabs v-model="tab" bg-color="purple" fixed-tabs>
+                                    <v-tab value="login">Login</v-tab>
+                                    <v-tab value="register">Register</v-tab>
+                                </v-tabs>
+
+                                <v-card-text>
+                                    <v-tabs-window v-model="tab">
+                                        <v-tabs-window-item value="login">
+                                            <v-form @submit.prevent="login">
+                                                <v-text-field label="Email" v-model="email.value.value"
+                                                    :error-messages="email.errorMessage.value"
+                                                    color="purple"></v-text-field>
+                                                <v-text-field label="Password" color="purple"
+                                                    v-model="password1.value.value"
+                                                    :error-messages="password1.errorMessage.value"></v-text-field>
+                                                <NuxtLink to="/accounts/forgot-password" class="text-blue-500">Forgot
+                                                    Password?</NuxtLink>
+                                                <v-checkbox label="Remember me"></v-checkbox>
+                                                <v-btn type="submit" class="w-full" color="purple"
+                                                    variant="tonal">Login</v-btn>
+                                            </v-form>
+                                        </v-tabs-window-item>
+
+                                        <v-tabs-window-item value="register">
+                                            <v-form @submit.prevent="register">
+                                                <v-text-field label="Username" color="purple"
+                                                    v-model="username.value.value"
+                                                    :error-messages="username.errorMessage.value"></v-text-field>
+                                                <v-text-field label="Email" color="purple" v-model="email.value.value"
+                                                    :error-messages="email.errorMessage.value"></v-text-field>
+                                                <v-text-field label="Password" color="purple"
+                                                    v-model="password1.value.value"
+                                                    :error-messages="password1.errorMessage.value"></v-text-field>
+                                                <v-text-field label="Confirm Password" color="purple"
+                                                    v-model="password2.value.value"
+                                                    :error-messages="password2.errorMessage.value"></v-text-field>
+                                                <v-btn type="submit" class="w-full" color="purple"
+                                                    variant="tonal">Register</v-btn>
+                                            </v-form>
+                                            <v-alert v-show="passwordsMatch" text="Please Confirm Passwrod."
+                                                title="Passwords is not match" type="error" variant="tonal"
+                                                class="mt-5"></v-alert>
+                                        </v-tabs-window-item>
+                                    </v-tabs-window>
+                                </v-card-text>
+                                <v-divider></v-divider>
+                                <v-card-footer>
+                                    <v-btn text="Close" @click="isActive.value = false" color="red" variant="text"
+                                        class="w-full" rounded="0"></v-btn>
+                                </v-card-footer>
+                            </v-card>
+
+                        </template>
+                    </v-dialog>
                 </div>
             </div>
             <div class="flex items-center justify-between lg:hidden p-2">
-                <v-btn variant="flat" color="purple" @click="sheet = !sheet">
+                <v-btn variant="text" color="purple" @click="sheet = !sheet">
                     <Icon name="solar:hamburger-menu-outline" size="20" />
                 </v-btn>
-                <v-btn rounded="xl" color="deep-purple" variant="tonal">Create Account
-                    <template v-slot:append>
-                        <Icon name="solar:square-alt-arrow-right-linear" size="20" />
+                <v-dialog max-width="500">
+                    <template v-slot:activator="{ props: activatorProps }">
+                        <MyButton lable="Create Account" color="deep-purple" icon="solar:square-alt-arrow-right-linear"
+                            v-bind="activatorProps" variant="flat" />
                     </template>
-                </v-btn>
+
+                    <template v-slot:default="{ isActive }">
+                        <v-card>
+                            <v-tabs v-model="tab" bg-color="purple" fixed-tabs>
+                                <v-tab value="login">Login</v-tab>
+                                <v-tab value="register">Register</v-tab>
+                            </v-tabs>
+
+                            <v-card-text>
+                                <v-tabs-window v-model="tab">
+                                    <v-tabs-window-item value="login">
+                                        <v-form @submit.prevent="null">
+                                            <v-text-field label="Email" color="purple"></v-text-field>
+                                            <v-text-field label="Password" color="purple"></v-text-field>
+                                            <NuxtLink to="/accounts/forgot-password" class="text-blue-500">Forgot
+                                                Password?</NuxtLink>
+                                            <v-checkbox label="Remember me"></v-checkbox>
+                                            <v-btn type="submit" class="w-full" color="purple"
+                                                variant="tonal">Login</v-btn>
+                                        </v-form>
+                                    </v-tabs-window-item>
+
+                                    <v-tabs-window-item value="register">
+                                        <v-form @submit.prevent="null">
+                                            <v-text-field label="Username" color="purple"></v-text-field>
+                                            <v-text-field label="Email" color="purple"></v-text-field>
+                                            <v-text-field label="Password" color="purple"></v-text-field>
+                                            <v-text-field label="Confirm Password" color="purple"></v-text-field>
+                                            <v-btn type="submit" class="w-full" color="purple"
+                                                variant="tonal">Register</v-btn>
+                                        </v-form>
+                                    </v-tabs-window-item>
+                                </v-tabs-window>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-footer>
+                                <v-btn text="Close" @click="isActive.value = false" color="red" variant="text"
+                                    class="w-full" rounded="0"></v-btn>
+                            </v-card-footer>
+                        </v-card>
+
+                    </template>
+                </v-dialog>
                 <v-bottom-sheet v-model="sheet">
                     <v-card class="text-center gap-5 justify-between py-2 px-2" height="200">
                         <v-card-header>
