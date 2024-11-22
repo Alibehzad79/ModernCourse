@@ -1,5 +1,7 @@
 <template>
     <div>
-        <h1>asdas</h1>
+        <div class="mt-5">
+            <Hero />
+        </div>
     </div>
 </template>

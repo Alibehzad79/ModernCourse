@@ -89,8 +89,7 @@ const tab = ref(null)
         <div class="container mx-auto">
             <div class="items-center justify-between hidden lg:flex">
                 <div>
-                    <a href="/"><v-img :width="80" :height="80" cover=""
-                            src="https://gratisography.com/wp-content/uploads/2024/03/gratisography-funflower-800x525.jpg"></v-img>
+                    <a href="/"><img class="w-[220px] h-[54px] rounded" src="/img/logo.jpg" />
                     </a>
                 </div>
                 <div class="flex items-center justify-around gap-5">
@@ -155,10 +154,10 @@ const tab = ref(null)
                                     </v-tabs-window>
                                 </v-card-text>
                                 <v-divider></v-divider>
-                                <v-card-footer>
+                                <v-card-actions>
                                     <v-btn text="Close" @click="isActive.value = false" color="red" variant="text"
                                         class="w-full" rounded="0"></v-btn>
-                                </v-card-footer>
+                                </v-card-actions>
                             </v-card>
 
                         </template>
@@ -185,9 +184,13 @@ const tab = ref(null)
                             <v-card-text>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="login">
-                                        <v-form @submit.prevent="null">
-                                            <v-text-field label="Email" color="purple"></v-text-field>
-                                            <v-text-field label="Password" color="purple"></v-text-field>
+                                        <v-form @submit.prevent="login">
+                                            <v-text-field label="Email" v-model="email.value.value"
+                                                :error-messages="email.errorMessage.value"
+                                                color="purple"></v-text-field>
+                                            <v-text-field label="Password" color="purple"
+                                                v-model="password1.value.value"
+                                                :error-messages="password1.errorMessage.value"></v-text-field>
                                             <NuxtLink to="/accounts/forgot-password" class="text-blue-500">Forgot
                                                 Password?</NuxtLink>
                                             <v-checkbox label="Remember me"></v-checkbox>
@@ -197,33 +200,42 @@ const tab = ref(null)
                                     </v-tabs-window-item>
 
                                     <v-tabs-window-item value="register">
-                                        <v-form @submit.prevent="null">
-                                            <v-text-field label="Username" color="purple"></v-text-field>
-                                            <v-text-field label="Email" color="purple"></v-text-field>
-                                            <v-text-field label="Password" color="purple"></v-text-field>
-                                            <v-text-field label="Confirm Password" color="purple"></v-text-field>
+                                        <v-form @submit.prevent="register">
+                                            <v-text-field label="Username" color="purple" v-model="username.value.value"
+                                                :error-messages="username.errorMessage.value"></v-text-field>
+                                            <v-text-field label="Email" color="purple" v-model="email.value.value"
+                                                :error-messages="email.errorMessage.value"></v-text-field>
+                                            <v-text-field label="Password" color="purple"
+                                                v-model="password1.value.value"
+                                                :error-messages="password1.errorMessage.value"></v-text-field>
+                                            <v-text-field label="Confirm Password" color="purple"
+                                                v-model="password2.value.value"
+                                                :error-messages="password2.errorMessage.value"></v-text-field>
                                             <v-btn type="submit" class="w-full" color="purple"
                                                 variant="tonal">Register</v-btn>
                                         </v-form>
+                                        <v-alert v-show="passwordsMatch" text="Please Confirm Passwrod."
+                                            title="Passwords is not match" type="error" variant="tonal"
+                                            class="mt-5"></v-alert>
                                     </v-tabs-window-item>
                                 </v-tabs-window>
                             </v-card-text>
                             <v-divider></v-divider>
-                            <v-card-footer>
+                            <v-card-actions>
                                 <v-btn text="Close" @click="isActive.value = false" color="red" variant="text"
                                     class="w-full" rounded="0"></v-btn>
-                            </v-card-footer>
+                            </v-card-actions>
                         </v-card>
 
                     </template>
                 </v-dialog>
                 <v-bottom-sheet v-model="sheet">
                     <v-card class="text-center gap-5 justify-between py-2 px-2" height="200">
-                        <v-card-header>
+                        <v-card-title>
                             <span class="font-bold text-xl">Menu</span>
-                        </v-card-header>
+                        </v-card-title>
                         <v-divider></v-divider>
-                        <v-card-body>
+                        <v-card-text>
                             <div class="flex flex-col items-center justify-around gap-5">
                                 <NuxtLink to="/">Home</NuxtLink>
                                 <NuxtLink to="/about">About Us</NuxtLink>
@@ -231,14 +243,13 @@ const tab = ref(null)
                                 <NuxtLink to="/blog">Blog</NuxtLink>
                                 <NuxtLink to="/contact">Contact</NuxtLink>
                             </div>
-                        </v-card-body>
+                        </v-card-text>
                         <v-divider></v-divider>
-                        <v-card-body></v-card-body>
-                        <v-card-footer>
+                        <v-card-actions>
                             <v-btn variant="outlined" class="w-full" color="red" @click="sheet = !sheet">
                                 close
                             </v-btn>
-                        </v-card-footer>
+                        </v-card-actions>
                     </v-card>
                 </v-bottom-sheet>
             </div>
